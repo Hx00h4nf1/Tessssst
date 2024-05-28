@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+template <class t>
+class ArrayList{     // Fixed Access Time but not Fixed Search Time  // Bad Insertion and Bad Removal
+private:
+    int numOfItems;
+    int cap;
+    t* arr;
+    void expand(){
+        cap *= 2;
+        t* temp = new t[cap];
+        for(int i=0;i<numOfItems;i++){
+            temp[i] = arr[i];
+        }
+        delete arr;
+        arr = temp;
+    }
+public:
+    ArrayList(){
+        numOfItems = 0;
+        cap = 2;
+        arr = new t[cap];
+    }
+    ~ArrayList(){
+        delete []arr;
+    }
+    void addToLast(t value){
+        if(numOfItems == cap)
+            expand();
+        arr[numOfItems] = value;
+        numOfItems++;
+    }
+    void addToFirst(t value){
+        if(numOfItems == cap)
+            expand();
+        for (int i = numOfItems; i > 0 ; i--)
+            arr[i] = arr[i - 1];
+        arr[0] = value;
+        numOfItems++;
+    }
+    void addByIndex(int idx, t value){
+        if (idx < 0 || idx > numOfItems) {
+            throw out_of_range("Index out of bounds");
+        }
+        if (numOfItems == cap)
+            expand();
+        for (int i = numOfItems; i > idx; i--) {
+            arr[i] = arr[i - 1];
+        }
+        arr[idx] = value;
+        numOfItems++;
+    }
+    void removeFromLast(){
+        numOfItems--;
+    }
+    void removeFromFirst(){
+        for (int i = 0; i < numOfItems; ++i)
+            arr[i] = arr[i+1];
+        numOfItems--;
+    }
+    void print() {
+        for (int i = 0; i < numOfItems; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl; // Add a newline character at the end
+    }
+    bool search(t value){
+        for (int i = 0; i < numOfItems; ++i) {
+            if(arr[i] == value)
+                return true;
+        }
+        return false;
+    }
+};
+int main(){
+    ArrayList<int> l;
+    for (int i = 1; i <= 5; i++) {
+        l.addToLast(i);   // 1 2 3 4 5
+    }
+    l.addByIndex(2,100);
+    l.print();
+    return 0;
+}
